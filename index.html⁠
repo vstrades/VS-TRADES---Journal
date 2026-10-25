@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VS TRADES - Journal & Daily P&L</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            background-color: #0b0f17;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans antialiased min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        function App() {
+            const [activeTab, setActiveTab] = React.useState('PNL');
+            
+            const pnlData = {
+                20: { amount: 815.00, type: 'win' },
+                21: { amount: 832.50, type: 'win' },
+                22: { amount: 975.00, type: 'win' }
+            };
+
+            const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
+            const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+            const emptyDays = Array.from({ length: 4 }, (_, i) => i);
+
+            return (
+                <div className="min-h-screen flex flex-col items-center p-4 sm:p-8">
+                    <header className="w-full max-w-2xl flex justify-between items-center mb-6 border-b border-slate-800/80 pb-4">
+                        <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <h1 className="text-lg font-bold tracking-wider text-emerald-400">VS TRADES</h1>
+                        </div>
+                        <span className="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">
+                            PRO JOURNAL
+                        </span>
+                    </header>
+
+                    <div className="w-full max-w-2xl bg-[#111622]/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-2xl backdrop-blur-md">
+                        <div className="flex items-center justify-between mb-6 border-b border-slate-800/60 pb-3">
+                            <span className="text-xs font-bold text-slate-400 tracking-wider">TRADING CALENDAR</span>
+                            <div className="flex items-center gap-2 bg-[#0b0f17] p-1 rounded-lg border border-slate-800">
+                                <button 
+                                    onClick={() => setActiveTab('PNL')}
+                                    className={`px-4 py-1 rounded-md text-xs font-bold transition-all ${
+                                        activeTab === 'PNL' 
+                                            ? 'bg-[#1b2436] text-white shadow-md border border-slate-700' 
+                                            : 'text-slate-400 hover:text-white'
+                                    }`}
+                                >
+                                    PNL
+                                </button>
+                                <button 
+                                    onClick={() => setActiveTab('Events')}
+                                    className={`px-4 py-1 rounded-md text-xs font-bold transition-all ${
+                                        activeTab === 'Events' 
+                                            ? 'bg-[#1b2436] text-white shadow-md border border-slate-700' 
+                                            : 'text-slate-400 hover:text-white'
+                                    }`}
+                                >
+                                    Events
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center bg-[#182030] px-5 py-3 rounded-xl mb-5 border border-slate-700/60 shadow-inner">
+                            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#111622] text-slate-300 hover:text-white border border-slate-700/50 transition">
+                                &larr;
+                            </button>
+                            <span className="font-bold text-base text-slate-100 tracking-wide">
+                                តុលា 2026
+                            </span>
+                            <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#111622] text-slate-300 hover:text-white border border-slate-700/50 transition">
+                                &rarr;
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1.5 sm:gap-2 text-center">
+                            {weekDays.map((day, idx) => (
+                                <div key={idx} className="text-[11px] font-bold text-slate-400 py-1 tracking-wider">
+                                    {day}
+                                </div>
+                            ))}
+
+                            {emptyDays.map((_, idx) => (
+                                <div key={`empty-${idx}`} className="h-16 sm:h-20 bg-[#0b0e17]/30 rounded-lg border border-slate-800/30"></div>
+                            ))}
+
+                            {daysInMonth.map((day) => {
+                                const data = pnlData[day];
+                                return (
+                                    <div 
+                                        key={day} 
+                                        className={`h-16 sm:h-20 rounded-xl border flex flex-col justify-between p-1.5 sm:p-2 transition-all ${
+                                            data 
+                                                ? 'bg-[#162536] border-emerald-500/60 shadow-lg shadow-emerald-950/30' 
+                                                : 'bg-[#0e131d] border-slate-800/80 hover:border-slate-700'
+                                        }`}
+                                    >
+                                        <span className={`text-[11px] font-semibold text-left ${data ? 'text-emerald-400' : 'text-slate-400'}`}>
+                                            {day}
+                                        </span>
+                                        
+                                        {data ? (
+                                            <div className="flex flex-col items-center justify-center mb-1">
+                                                <span className="text-[10px] sm:text-xs font-extrabold text-emerald-400 tracking-tight">
+                                                    ${data.amount.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <div className="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-center text-xs text-slate-400">
+                            <div>Total Monthly P&L: <span className="text-emerald-400 font-bold">+$2,622.50</span></div>
+                            <div>Win Rate: <span className="text-emerald-400 font-bold">100%</span></div>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
